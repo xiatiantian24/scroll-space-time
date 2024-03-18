@@ -1,32 +1,670 @@
-
-$(document).ready(function(){
-
-  
-  var container = $("#container"),
-  trans3DBText = $("#trans3DText"), // div containing all tezt
-   textContent = $('.text-content'),
-  slider = $("#slider"),
-  threeDTimeline = gsap.timeline(); //onUpdate allows the slider to stay in sync as animation plays
-
-textContent.html(
-  textContent.text().replace(/./g, "<span>$&</span>").replace(/\s/g, "&nbsp;")
-);
-
-console.log("test");
+console.clear();
 gsap.registerPlugin(ScrollTrigger);
 
-gsap.to(textContent, {
-  scale: 1,
-  x: 0,
-  y: 0,
-  scrollTrigger: {
-    trigger: textContent,
-    start: "bottom bottom", 
-    end: "bottom top", 
-    scrub: true, 
-    markers: true, 
-    pin: true, 
-  },
+var body = $("body"),
+  container = $("#container"),
+  trans3DDemo = $("#trans3DDemo"),
+  trans3DText = $(".trans3DText"), // div containing text
+  z3DText = $("#z3DText"), // div containing text
+  textContent = $(".text-content"), //original text div
+  textContainer = $(".text-container"),
+  level0P = document.querySelectorAll(".level-0 p"),
+  level5P = document.querySelectorAll(".level-5 p"),
+  level6P = document.querySelectorAll(".level-6 p"),
+  level7P = document.querySelectorAll(".level-7 p"),
+  level8P = document.querySelectorAll(".level-8 p"),
+  level9P = document.querySelectorAll(".level-9 p"),
+  level10P = document.querySelectorAll(".level-10 p"),
+  level11P = document.querySelectorAll(".level-11 p"),
+  level12P = document.querySelectorAll(".level-12 p"),
+  level13P = document.querySelectorAll(".level-13 p"),
+  level14P = document.querySelectorAll(".level-14 p"),
+
+  slider = $("#slider"),
+  loadTimeline = gsap.timeline(),
+  skewTimeline = gsap.timeline();
+turnTimeline = gsap.timeline();
+
+//scroll trigger markers control
+ScrollTrigger.defaults({
+  markers: true,
 });
 
-})
+
+//animation on load / refresh
+let load = loadTimeline.fromTo(
+  ".animation",
+  { y: -400 }, { y: 0, duration: 3, ease: "power2.out" }, 0
+)
+  .fromTo(
+    "#trans3DDemo",
+    { y: 1000 }, { y: 0, duration: 3, ease: "power2.out" }, 0
+  )
+  .from(
+    "#slider",
+    { y: 1000, duration: 3, ease: "power2.out" }, 1
+  )
+  ;
+load.play();
+console.log("load");
+
+function displayScrollSpeed() {
+  var display = Math.round(scrollSpeed * 10) / 1;
+  document.getElementById("scroll-speed-display").innerHTML = "Acceleration <br> <span id='speed-number'>" + display + "</span>";
+}
+
+
+//TODO: play audio based on scroll distance
+function playSound(event) {
+  event.preventDefault();
+  volume = Math.abs(event.deltaY) * 0.5;
+  if (Math.abs(event.deltaY) > 0) {
+    console.log("play sound on volume " + volume);
+  }
+}
+
+let volume = 0;
+// body.onwheel = sound;
+document.body.addEventListener("wheel", playSound, { passive: true });
+
+
+//randomly select letters from a paragraph
+function selectLetters(paragraphs, number) {
+  paragraphs.forEach((paragraph) => {
+    const textContent = paragraph.textContent;
+    let indexes = [];
+    while (indexes.length < number) {
+      const index = Math.floor(Math.random() * textContent.length);
+      if (
+        !indexes.includes(index) &&
+        textContent[index] !== " " &&
+        textContent[index] !== "\n"
+      ) {
+        indexes.push(index);
+      }
+    }
+    indexes.sort((a, b) => a - b);
+    let newTextContent = "";
+    let currentIndex = 0;
+    indexes.forEach((index) => {
+      newTextContent += textContent.substring(currentIndex, index);
+      newTextContent += `<div class="animate-z">${textContent[index]}</div>`;
+      currentIndex = index + 1;
+    });
+    newTextContent += textContent.substring(currentIndex);
+    paragraph.innerHTML = newTextContent;
+  });
+}
+
+selectLetters(level5P, 300);
+selectLetters(level6P, 400);
+selectLetters(level7P, 600);
+selectLetters(level8P, 30);
+selectLetters(level9P, 10);
+selectLetters(level10P, 30);
+selectLetters(level11P, 60);
+selectLetters(level12P, 100);
+selectLetters(level13P, 100);
+selectLetters(level14P, 209);
+
+
+// Select all elements with class "animate-z"
+var level5L = document.querySelectorAll(".level-5 .animate-z"),
+  level6L = document.querySelectorAll(".level-6 .animate-z"),
+  level7L = document.querySelectorAll(".level-7 .animate-z"),
+  level8L = document.querySelectorAll(".level-8 .animate-z"),
+  level9L = document.querySelectorAll(".level-9 .animate-z"),
+  level10L = document.querySelectorAll(".level-10 .animate-z"),
+  level11L = document.querySelectorAll(".level-11 .animate-z"),
+  level12L = document.querySelectorAll(".level-12 .animate-z"),
+  level13L = document.querySelectorAll(".level-13 .animate-z"),
+  level14L = document.querySelectorAll(".level-14 .animate-z"),
+  tail = document.querySelectorAll(".tail .animate-z::after");
+
+
+//animation 1: skew
+let proxy = { skew: 0, rotationY: 0 },
+  turn = { rotationZ: 0 },
+  ySkewSetter = gsap.quickTo(trans3DText, "skewY", { duration: 0.5, ease: "power3.out" }, "deg"),
+  rotationSetter = gsap.quickTo(trans3DText, "rotationY", { duration: 0.5, ease: "power3.out" }, "deg"),
+  flipSetter = gsap.quickTo(trans3DText, "rotationY", { duration: 5, ease: "power3.inOut" }, "deg"),
+  zSetter = gsap.quickTo(trans3DText, "translateZ", { ease: "power3.out" }),
+  turnSetter = gsap.quickTo(level8L, "rotationZ", { duration: 5, ease: "power3.out" }, "deg")
+  // yClamp = gsap.utils.clamp(-100, 100)
+  ;
+
+let scrollSpeed = 0,
+  perspective = 1000,
+  rotation = 0;
+
+ScrollTrigger.create({
+  onUpdate: (self) => {
+    scrollSpeed = self.getVelocity() / 600;
+    displayScrollSpeed();
+
+    perspective = 1000 / Math.sqrt(Math.abs(Math.abs(scrollSpeed) - 2));
+    if (
+      Math.abs(scrollSpeed) > Math.abs(proxy.skew)
+    ) {
+      proxy.skew = scrollSpeed * 2;
+      proxy.rotationY = -scrollSpeed * 2;
+      skewTimeline.to(proxy, {
+        skew: 0,
+        rotationY: 0,
+        duration: 3,
+        ease: "power3.out",
+        overwrite: true,
+        onUpdate: () => {
+          ySkewSetter(proxy.skew);
+          rotationSetter(proxy.rotationY);
+        },
+        onStart: () => {
+          gsap.set(".trans3DText", {
+            transformPerspective: perspective,
+            transformStyle: "preserve-3d"
+          });
+          // console.log(perspective);
+        }
+      });
+      // console.log("skew on speed: " + scrollSpeed);
+    };
+    if (
+      Math.abs(scrollSpeed) > 12
+    ) {
+      proxy.rotationY = -360;
+      perspective = 1000;
+      // console.log("rotate on speed: " + scrollSpeed);
+    };
+    // if (
+    //   Math.abs(scrollSpeed) > Math.abs(turn.rotationZ)
+    // ) {
+    //   turn.rotationZ = scrollSpeed * 3;
+    //   turnTimeline.to(turn, {
+    //     rotationZ: 0,
+    //     duration: 3,
+    //     ease: "power3.out",
+    //     overwrite: true,
+    //     onUpdate: () => {
+    //       turnSetter(turn.rotationZ);  
+    //       console.log("level-8");
+    //     },
+    //     onStart: () => {
+    //       // gsap.set(".level-8 .animate-z", {
+    //       //   transformPerspective: perspective,
+    //       //   transformStyle: "preserve-3d"
+    //       // });
+    //     }
+    //   });
+    // };
+  }
+});
+
+// make the right edge "stick" to the scroll bar. force3D: true improves performance
+// gsap.set(trans3DText, { transformOrigin: "center center", force3D: true });
+
+
+//animation 2: z translate
+//add label "z" for placement of next group of tweens
+// timeline5.add("z"); 
+function level5Animation() {
+  let timeline5 = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".level-5",
+      start: "-1300 top",
+      end: "+=3800",
+      toggleActions: "play none play reset",
+      id: "z-5",
+    }
+  });
+  level5L.forEach((letter) => {
+    var zNum = getRandom(-10, 10);
+    timeline5.to(
+      letter,
+      {
+        css: { z: zNum },
+        ease: "power2.out",
+        duration: 6,
+      },
+      "<+=0.02"
+      // "z"
+    );
+  });
+}
+
+function level6Animation() {
+  let timeline6 = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".level-6",
+      start: "-1000 bottom",
+      end: "+=4000",
+      toggleActions: "play none play reset",
+      id: "z-6",
+    }
+  });
+  level6L.forEach((letter) => {
+    var zNum = getRandom(-80, 80);
+    timeline6.to(
+      letter,
+      {
+        css: { z: zNum },
+        ease: "power2.out",
+        duration: 6,
+      },
+      "<+=0.01"
+    );
+  });
+}
+
+function level7Animation() {
+  let timeline7 = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".level-7",
+      start: "-1000 bottom",
+      end: "+=5800",
+      toggleActions: "play reverse play reset",
+      id: "z-7",
+    }
+  });
+  level7L.forEach((letter) => {
+    var zNum = getRandom(-800, 800);
+    timeline7.to(
+      letter,
+      {
+        css: { z: zNum },
+        ease: "power2.out",
+        duration: 6,
+      },
+      "<+=0.001"
+    );
+  });
+}
+
+level5Animation();
+level6Animation();
+level7Animation();
+
+
+//animation 3: falling
+function level8Animation() {
+
+  level8L.forEach((letter) => {
+    var rNum = getRandom(0, -100);
+
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: letter,
+        start: "-800 bottom",
+        end: "+=500",
+        toggleActions: "play none none reverse",
+        id: "z-8",
+        srub: true,
+      }
+    })
+      .to(
+        letter,
+        {
+          rotation: rNum,
+          ease: "power2.in",
+          duration: 10, //TODO: attach duration to scrolltrigger
+        },
+        0
+      );
+
+  });
+}
+
+function level9Animation() {
+
+  level9L.forEach((letter) => {
+    let timeline9 = gsap.timeline({
+      scrollTrigger: {
+        trigger: letter,
+        start: "-800 top",
+        end: "+=1000",
+        toggleActions: "play none reverse reset",
+        id: "z-9",
+      }
+    });
+
+    var yNum = getRandom(1000, 100);
+    var xNum = getRandom(20, -20);
+    var rNum = getRandom(90, -90);
+    var topNum = getRandom(750, 680);
+
+
+    timeline9.to(
+      letter,
+      {
+        css: {
+          rotation: rNum,
+        },
+        ease: "power2.in",
+        duration: 1,
+      },
+    );
+
+     timeline9.to(
+      letter,
+      {
+        css: {
+          y: 2000
+        },
+        ease: "power2.in",
+        duration: 2,
+      },
+      0
+    );  
+
+    // displayTail(level9P);
+
+    timeline9.to(
+      letter,
+      {
+        css: {
+
+          opacity: 0,
+        },
+        ease: "power2.in",
+        duration: 0.1,
+      },
+      ">"
+    );
+  });
+}
+
+
+function level10Animation() {
+
+  level10L.forEach((letter) => {
+    let timeline10 = gsap.timeline({
+      scrollTrigger: {
+        trigger: letter,
+        start: "-800 top",
+        end: "+=1000",
+        toggleActions: "play none reverse reverse",
+        id: "z-10",
+      }
+    });
+
+    var yNum = getRandom(3000, 2000);
+    var xNum = getRandom(20, -20);
+    var rNum = getRandom(0, -90);
+    var topNum = getRandom(750, 680);
+
+
+    timeline10.to(
+      letter,
+      {
+        css: {
+          rotation: rNum,
+        },
+        ease: "power2.in",
+        duration: 1,
+      },
+    );
+
+     timeline10.to(
+      letter,
+      {
+        css: {
+          y: yNum
+        },
+        ease: "power2.in",
+        duration: 2,
+      },
+      "<+=0.01"
+    );  
+
+    // displayTail(level10P);
+
+    timeline10.to(
+      letter,
+      {
+        css: {
+          opacity: 0,
+        },
+        ease: "power2.in",
+        duration: 0.1,
+      },
+      ">"
+    );
+  });
+}
+
+
+function level11Animation() {
+
+  level11L.forEach((letter) => {
+    let timeline11 = gsap.timeline({
+      scrollTrigger: {
+        trigger: letter,
+        start: "-700 top",
+        end: "+=1000",
+        toggleActions: "play none reverse reverse",
+        id: "z-11",
+      }
+    });
+
+    var yNum = getRandom(3000, 2000);
+    var xNum = getRandom(20, -20);
+    var rNum = getRandom(0, -90);
+    var topNum = getRandom(750, 680);
+
+
+    timeline11.to(
+      letter,
+      {
+        css: {
+          rotation: rNum,
+        },
+        ease: "power2.in",
+        duration: 1,
+      },
+    );
+
+     timeline11.to(
+      letter,
+      {
+        css: {
+          y: yNum
+        },
+        ease: "power2.in",
+        duration: 2,
+      },
+      "<+=0.01"
+    );  
+
+    // displayTail(level11P);
+
+    timeline11.to(
+      letter,
+      {
+        css: {
+          opacity: 0,
+        },
+        ease: "power2.in",
+        duration: 0.1,
+      },
+      ">"
+    );
+  });
+}
+
+function level12Animation() {
+
+  level12L.forEach((letter) => {
+    let timeline12 = gsap.timeline({
+      scrollTrigger: {
+        trigger: letter,
+        start: "-700 top",
+        end: "+=1000",
+        toggleActions: "play none reverse reverse",
+        id: "z-12",
+      }
+    });
+
+    var yNum = getRandom(5000, 4000);
+    var xNum = getRandom(20, -20);
+    var rNum = getRandom(0, -90);
+    var topNum = getRandom(750, 680);
+
+
+    timeline12.to(
+      letter,
+      {
+        css: {
+          rotation: rNum,
+        },
+        ease: "power2.in",
+        duration: 1,
+      },
+    );
+
+     timeline12.to(
+      letter,
+      {
+        css: {
+          y: yNum
+        },
+        ease: "power2.in",
+        duration: 2,
+      },
+      "<+=0.01"
+    );  
+
+    // displayTail(level11P);
+
+    timeline12.to(
+      letter,
+      {
+        css: {
+          opacity: 0,
+        },
+        ease: "power2.in",
+        duration: 0.1,
+      },
+      ">"
+    );
+  });
+}
+
+function level13Animation() {
+
+  level13L.forEach((letter) => {
+    let timeline13 = gsap.timeline({
+      scrollTrigger: {
+        trigger: letter,
+        start: "-700 top",
+        end: "+=1000",
+        toggleActions: "play none reverse reverse",
+        id: "z-13",
+      }
+    });
+
+    var yNum = getRandom(7000, 6000);
+    var xNum = getRandom(20, -20);
+    var rNum = getRandom(0, -90);
+    var topNum = getRandom(750, 680);
+
+
+    timeline13.to(
+      letter,
+      {
+        css: {
+          rotation: rNum,
+        },
+        ease: "power2.in",
+        duration: 1,
+      },
+    );
+
+     timeline13.to(
+      letter,
+      {
+        css: {
+          y: yNum
+        },
+        ease: "power2.in",
+        duration: 2,
+      },
+      "<+=0.01"
+    );  
+
+    // displayTail(level11P);
+
+    timeline13.to(
+      letter,
+      {
+        css: {
+          opacity: 0,
+        },
+        ease: "power2.in",
+        duration: 0.1,
+      },
+      ">"
+    );
+  });
+}
+
+
+function level14Animation() {
+
+  level14L.forEach((letter) => {
+    let timeline14 = gsap.timeline({
+      scrollTrigger: {
+        trigger: level14P,
+        start: "bottom bottom",
+        // end: "+=1000",
+        toggleActions: "play none reverse reverse",
+        id: "z-14",
+      }
+    });
+
+    var yNum = getRandom(1000, 100);
+    var xNum = getRandom(20, -20);
+    var rNum = getRandom(0, -90);
+    var topNum = getRandom(500, 680);
+
+     timeline14.to(
+      letter,
+      {
+        css: {
+          position: "sticky",
+          top: topNum,
+          rotation: rNum,
+          x: xNum,
+        },
+        ease: "none",
+        duration: 1,
+      },
+      "<+=0.01"
+    );  
+
+    // displayTail(level11P);
+  });
+}
+
+level8Animation();
+level9Animation();
+level10Animation();
+level11Animation();
+level12Animation();
+level13Animation();
+level14Animation();
+
+//Add to the bottom of the screen
+// document.getElementByClass("level-14").innerHTML = "<span>" + letter + "</span>";
+
+function getRandom(max, min) {
+  return Math.floor(Math.random() * (1 + max - min) + min);
+}
+
+function displayTail(paragraph) {
+  // paragraph.addEventListener("wheel", function () {
+    paragraph.documentElement.style.setProperty('--width', getRandom(1000, 10));
+  // }, { passive: true });
+}
+
+window.onbeforeunload = function () {
+  window.scrollTo(0, 0);
+}

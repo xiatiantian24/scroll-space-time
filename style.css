@@ -1,18 +1,171 @@
-body {
-    background:#673A49;
-    font-family: 'Inter', sans-serif;
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+
 }
 
-#trans3DText {
-  position:absolute;
-	top:70px;
-	right:240px;
-	width:300px;
+body {
+  background: #673a49;
+  font-family: "Libre Baskerville", serif;
+  overflow-x: hidden;
+  /* height: 50000px; */
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+
+  max-width: 1000px;
+  height: auto;
+  padding-top: 70px;
+  position: relative;
+  left: 300px;
+  /* transform: translateY(0); */
+
+  /*   overflow: hidden; */
+}
+
+#trans3DDemo {
+  position: relative;
+  margin-top: 10rem;
+}
+
+#slider {
+  width: 10px;
+  background-color: white;
+  bottom: 0;
+  display: flex;
+  position: relative;
+  z-index: -2;
+}
+
+#scroll-speed-display {
+  position: fixed;
+  left: 200px;
+  top: 300px;
+  z-index: 1;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  color: #fff;
+  line-height: 1rem;
+}
+
+#speed-number {
+  font-size: 1rem;
+}
+
+.text-container {
+  /*   display: flex; */
+  position: relative;
+  left: 250px;
+  width: 800px;
 }
 
 p {
-  color: #000;
-  font-weight: 700;
+  color: #fff;
+  font-weight: 400;
   line-height: 150%;
-  margin-bottom: 60px;
+  /* letter-spacing: 0.05rem; */
+  font-size: 3.5rem;
+}
+
+p {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.level-7 {
+  margin-bottom: 150rem;
+}
+
+.level-9 {
+  margin-bottom: 30rem;
+}
+
+.level-10 {
+  margin-bottom: 80rem;
+}
+
+.level-11 {
+  margin-bottom: 120rem;
+}
+
+.level-12 {
+  margin-bottom: 180rem;
+}
+
+.level-13 {
+  margin-bottom: 400rem;
+}
+
+.level-14 {
+  margin-bottom: 0;
+}
+
+
+.animate-z {
+  display: inline-block;
+  transform: translateZ(0px);
+  z-index: 3;
+  position: relative;
+}
+
+.tail .animate-z::after {
+  content: "";
+  position: absolute;
+  width: var(--width);
+  height: 20%;
+  background-color: #fff;
+  box-sizing: border-box;
+  top: calc(50%);
+}
+
+.sticky {
+  position: sticky;
+  /* bottom: 50px; */
+}
+
+.animation {
+  width: 200px;
+  height: 200px;
+  background-color: rgb(160, 160, 160);
+  position: fixed;
+  left: 200px;
+  top: 50px;
+  z-index: -1;
+}
+
+.text-content::after {
+  content: '';
+  display: block;
+  width: 100px;
+  height: 50px;
+  margin: auto;
+  margin-bottom: 20rem;
+  margin-top: 20rem;
+  background-repeat: no-repeat;
+  background-image: url("https://png.pngtree.com/png-vector/20190121/ourmid/pngtree-golden-key-golden-key-love-gold-png-image_519713.jpg");
+  perspective: none;
+}
+
+.prelude {
+  font-style: italic;
+  font-size: 1.3rem;
+  line-height: 150%;
+}
+
+.prelude::after {
+  content: '';
+  display: block;
+  width: 100px;
+  height: 50px;
+  margin: auto;
+  margin-bottom: 6rem;
+  margin-top: 6rem;
+  background-repeat: no-repeat;
+  background-image: url("https://png.pngtree.com/png-vector/20190121/ourmid/pngtree-golden-key-golden-key-love-gold-png-image_519713.jpg");
+  perspective: none;
 }
