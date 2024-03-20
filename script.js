@@ -56,15 +56,18 @@ function displayScrollSpeed() {
 
 //TODO: play audio based on scroll distance
 function playSound(event) {
-  event.preventDefault();
-  volume = Math.abs(event.deltaY) * 0.5;
+  // event.preventDefault();
+  volume = Math.pow(Math.abs(event.deltaY) * 0.03, 1.5);
   if (Math.abs(event.deltaY) > 0) {
     console.log("play sound on volume " + volume);
+    audio.volume = volume;
+    audio.currentTime = 0;
+    audio.play();
   }
 }
 
-let volume = 0;
-// body.onwheel = sound;
+let volume = gsap.utils.clamp(0, 1);
+let audio = new Audio('scroll3.wav');
 document.body.addEventListener("wheel", playSound, { passive: true });
 
 
@@ -96,16 +99,27 @@ function selectLetters(paragraphs, number) {
   });
 }
 
-selectLetters(level5P, 300);
-selectLetters(level6P, 400);
-selectLetters(level7P, 600);
-selectLetters(level8P, 30);
+// selectLetters(level5P, 300);
+// selectLetters(level6P, 400);
+// selectLetters(level7P, 600);
+// selectLetters(level8P, 30);
+// selectLetters(level9P, 10);
+// selectLetters(level10P, 30);
+// selectLetters(level11P, 60);
+// selectLetters(level12P, 100);
+// selectLetters(level13P, 100);
+// selectLetters(level14P, 209);
+
+selectLetters(level5P, 120);
+selectLetters(level6P, 200);
+selectLetters(level7P, 250);
+selectLetters(level8P, 15);
 selectLetters(level9P, 10);
-selectLetters(level10P, 30);
-selectLetters(level11P, 60);
-selectLetters(level12P, 100);
-selectLetters(level13P, 100);
-selectLetters(level14P, 209);
+// selectLetters(level10P, 15);
+// selectLetters(level11P, 30);
+// selectLetters(level12P, 50);
+// selectLetters(level13P, 50);
+// selectLetters(level14P, 209);
 
 
 // Select all elements with class "animate-z"
@@ -130,6 +144,7 @@ let proxy = { skew: 0, rotationY: 0 },
   flipSetter = gsap.quickTo(trans3DText, "rotationY", { duration: 5, ease: "power3.inOut" }, "deg"),
   zSetter = gsap.quickTo(trans3DText, "translateZ", { ease: "power3.out" }),
   turnSetter = gsap.quickTo(level8L, "rotationZ", { duration: 5, ease: "power3.out" }, "deg")
+  // bgSetter
   // yClamp = gsap.utils.clamp(-100, 100)
   ;
 
@@ -137,65 +152,57 @@ let scrollSpeed = 0,
   perspective = 1000,
   rotation = 0;
 
+var startTime = Date.now(); // Store the timestamp when the page is loaded
+
+function getElapsedTime() {
+  var currentTime = Date.now();
+  return currentTime - startTime;
+}
+
+
 ScrollTrigger.create({
   onUpdate: (self) => {
-    scrollSpeed = self.getVelocity() / 600;
-    displayScrollSpeed();
+    // var elapsedTime = getElapsedTime();
+    // if (elapsedTime % 2 === 0) {
+    //   return;
+    // } else {
+      scrollSpeed = self.getVelocity() / 600;
+      displayScrollSpeed();
 
-    perspective = 1000 / Math.sqrt(Math.abs(Math.abs(scrollSpeed) - 2));
-    if (
-      Math.abs(scrollSpeed) > Math.abs(proxy.skew)
-    ) {
-      proxy.skew = scrollSpeed * 2;
-      proxy.rotationY = -scrollSpeed * 2;
-      skewTimeline.to(proxy, {
-        skew: 0,
-        rotationY: 0,
-        duration: 3,
-        ease: "power3.out",
-        overwrite: true,
-        onUpdate: () => {
-          ySkewSetter(proxy.skew);
-          rotationSetter(proxy.rotationY);
-        },
-        onStart: () => {
-          gsap.set(".trans3DText", {
-            transformPerspective: perspective,
-            transformStyle: "preserve-3d"
-          });
-          // console.log(perspective);
-        }
-      });
-      // console.log("skew on speed: " + scrollSpeed);
-    };
-    if (
-      Math.abs(scrollSpeed) > 12
-    ) {
-      proxy.rotationY = -360;
-      perspective = 1000;
-      // console.log("rotate on speed: " + scrollSpeed);
-    };
-    // if (
-    //   Math.abs(scrollSpeed) > Math.abs(turn.rotationZ)
-    // ) {
-    //   turn.rotationZ = scrollSpeed * 3;
-    //   turnTimeline.to(turn, {
-    //     rotationZ: 0,
-    //     duration: 3,
-    //     ease: "power3.out",
-    //     overwrite: true,
-    //     onUpdate: () => {
-    //       turnSetter(turn.rotationZ);  
-    //       console.log("level-8");
-    //     },
-    //     onStart: () => {
-    //       // gsap.set(".level-8 .animate-z", {
-    //       //   transformPerspective: perspective,
-    //       //   transformStyle: "preserve-3d"
-    //       // });
-    //     }
-    //   });
-    // };
+      perspective = 1000 / Math.sqrt(Math.abs(Math.abs(scrollSpeed) - 2));
+      if (
+        Math.abs(scrollSpeed) > Math.abs(proxy.skew)
+      ) {
+        proxy.skew = scrollSpeed * 2;
+        proxy.rotationY = -scrollSpeed * 2;
+        skewTimeline.to(proxy, {
+          skew: 0,
+          rotationY: 0,
+          duration: 3,
+          ease: "power3.out",
+          overwrite: true,
+          onUpdate: () => {
+            ySkewSetter(proxy.skew);
+            rotationSetter(proxy.rotationY);
+          },
+          onStart: () => {
+            gsap.set(".trans3DText", {
+              transformPerspective: perspective,
+              transformStyle: "preserve-3d"
+            });
+            // console.log(perspective);
+          }
+        });
+        // console.log("skew on speed: " + scrollSpeed);
+      };
+      if (
+        Math.abs(scrollSpeed) > 12
+      ) {
+        proxy.rotationY = -360;
+        perspective = 1000;
+        // console.log("rotate on speed: " + scrollSpeed);
+      };
+    // }
   }
 });
 
@@ -260,13 +267,13 @@ function level7Animation() {
     scrollTrigger: {
       trigger: ".level-7",
       start: "-1000 bottom",
-      end: "+=5800",
+      end: "+=5600",
       toggleActions: "play reverse play reset",
       id: "z-7",
     }
   });
   level7L.forEach((letter) => {
-    var zNum = getRandom(-800, 800);
+    var zNum = getRandom(-400, 800);
     timeline7.to(
       letter,
       {
@@ -286,26 +293,25 @@ level7Animation();
 
 //animation 3: falling
 function level8Animation() {
-
   level8L.forEach((letter) => {
     var rNum = getRandom(0, -100);
 
     gsap.timeline({
       scrollTrigger: {
         trigger: letter,
-        start: "-800 bottom",
-        end: "+=500",
-        toggleActions: "play none none reverse",
+        start: "-=700 center",
+        end: "+=600",
+        toggleActions: "play none reverse none",
         id: "z-8",
-        srub: true,
+        srub: 1,
+        ease: "none",
       }
     })
       .to(
         letter,
         {
-          rotation: rNum,
-          ease: "power2.in",
-          duration: 10, //TODO: attach duration to scrolltrigger
+          rotation: 180,
+          opacity: 0,
         },
         0
       );
@@ -314,61 +320,51 @@ function level8Animation() {
 }
 
 function level9Animation() {
-
   level9L.forEach((letter) => {
-    let timeline9 = gsap.timeline({
-      scrollTrigger: {
-        trigger: letter,
-        start: "-800 top",
-        end: "+=1000",
-        toggleActions: "play none reverse reset",
-        id: "z-9",
-      }
-    });
-
-    var yNum = getRandom(1000, 100);
+    // var yNum = getRandom(1000, 100);
     var xNum = getRandom(20, -20);
     var rNum = getRandom(90, -90);
     var topNum = getRandom(750, 680);
 
-
-    timeline9.to(
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: letter,
+        start: "-=700 30%",
+        // end: "+=1000",
+        // end: () => "+=" + document.letter.offsetWith,
+        endTrigger: ".level-9",
+        end: "+=400 80%",
+        toggleActions: "play none reverse none",
+        id: "z-9",
+        ease: "none",
+      }
+    })
+    .to(
       letter,
       {
-        css: {
-          rotation: rNum,
-        },
-        ease: "power2.in",
-        duration: 1,
+        position: "sticky",
+        top: getRandom(750, 680),
+        rotation: getRandom(90, -90),
+        x: getRandom(20, -20),
+        // rotation: getRandom(90, -90),
+          // y: 100,
       },
     );
-
-     timeline9.to(
-      letter,
-      {
-        css: {
-          y: 2000
-        },
-        ease: "power2.in",
-        duration: 2,
-      },
-      0
-    );  
 
     // displayTail(level9P);
 
-    timeline9.to(
-      letter,
-      {
-        css: {
+    // timeline9.to(
+    //   letter,
+    //   {
+    //     css: {
 
-          opacity: 0,
-        },
-        ease: "power2.in",
-        duration: 0.1,
-      },
-      ">"
-    );
+    //       opacity: 0,
+    //     },
+    //     ease: "power2.in",
+    //     duration: 0.1,
+    //   },
+    //   ">"
+    // );
   });
 }
 
@@ -403,7 +399,7 @@ function level10Animation() {
       },
     );
 
-     timeline10.to(
+    timeline10.to(
       letter,
       {
         css: {
@@ -413,7 +409,7 @@ function level10Animation() {
         duration: 2,
       },
       "<+=0.01"
-    );  
+    );
 
     // displayTail(level10P);
 
@@ -462,7 +458,7 @@ function level11Animation() {
       },
     );
 
-     timeline11.to(
+    timeline11.to(
       letter,
       {
         css: {
@@ -472,7 +468,7 @@ function level11Animation() {
         duration: 2,
       },
       "<+=0.01"
-    );  
+    );
 
     // displayTail(level11P);
 
@@ -520,7 +516,7 @@ function level12Animation() {
       },
     );
 
-     timeline12.to(
+    timeline12.to(
       letter,
       {
         css: {
@@ -530,7 +526,7 @@ function level12Animation() {
         duration: 2,
       },
       "<+=0.01"
-    );  
+    );
 
     // displayTail(level11P);
 
@@ -578,7 +574,7 @@ function level13Animation() {
       },
     );
 
-     timeline13.to(
+    timeline13.to(
       letter,
       {
         css: {
@@ -588,7 +584,7 @@ function level13Animation() {
         duration: 2,
       },
       "<+=0.01"
-    );  
+    );
 
     // displayTail(level11P);
 
@@ -625,7 +621,7 @@ function level14Animation() {
     var rNum = getRandom(0, -90);
     var topNum = getRandom(500, 680);
 
-     timeline14.to(
+    timeline14.to(
       letter,
       {
         css: {
@@ -638,7 +634,7 @@ function level14Animation() {
         duration: 1,
       },
       "<+=0.01"
-    );  
+    );
 
     // displayTail(level11P);
   });
@@ -661,7 +657,7 @@ function getRandom(max, min) {
 
 function displayTail(paragraph) {
   // paragraph.addEventListener("wheel", function () {
-    paragraph.documentElement.style.setProperty('--width', getRandom(1000, 10));
+  paragraph.documentElement.style.setProperty('--width', getRandom(1000, 10));
   // }, { passive: true });
 }
 
