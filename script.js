@@ -30,7 +30,7 @@ ScrollTrigger.defaults({
   markers: true,
 });
 
-
+// TODO: play some css animation before the javascript so that it can load without notice
 //animation on load / refresh
 let load = loadTimeline.fromTo(
   ".animation",
@@ -54,11 +54,13 @@ function displayScrollSpeed() {
 }
 
 
-//TODO: play audio based on scroll distance
 function playSound(event) {
   // event.preventDefault();
   volume = Math.pow(Math.abs(event.deltaY) * 0.03, 1.5);
-  if (Math.abs(event.deltaY) > 0) {
+    var elapsedTime = getElapsedTime();
+    if (elapsedTime % 2 === 0) {
+      return;
+    } else if (Math.abs(event.deltaY) > 0) {
     console.log("play sound on volume " + volume);
     audio.volume = volume;
     audio.currentTime = 0;
@@ -162,10 +164,6 @@ function getElapsedTime() {
 
 ScrollTrigger.create({
   onUpdate: (self) => {
-    // var elapsedTime = getElapsedTime();
-    // if (elapsedTime % 2 === 0) {
-    //   return;
-    // } else {
       scrollSpeed = self.getVelocity() / 600;
       displayScrollSpeed();
 
@@ -196,13 +194,12 @@ ScrollTrigger.create({
         // console.log("skew on speed: " + scrollSpeed);
       };
       if (
-        Math.abs(scrollSpeed) > 12
+        Math.abs(scrollSpeed) > 15
       ) {
         proxy.rotationY = -360;
         perspective = 1000;
         // console.log("rotate on speed: " + scrollSpeed);
       };
-    // }
   }
 });
 
@@ -301,7 +298,7 @@ function level8Animation() {
         trigger: letter,
         start: "-=500 center",
         end: "+=600",
-        toggleActions: "play none reverse none",
+        toggleActions: "play none reverse reset",
         id: "z-8",
         srub: 1,
         ease: "none",
