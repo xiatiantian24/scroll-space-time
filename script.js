@@ -114,12 +114,12 @@ selectLetters(level5P, 120);
 selectLetters(level6P, 200);
 selectLetters(level7P, 250);
 selectLetters(level8P, 15);
-selectLetters(level9P, 10);
-// selectLetters(level10P, 15);
-// selectLetters(level11P, 30);
-// selectLetters(level12P, 50);
-// selectLetters(level13P, 50);
-// selectLetters(level14P, 209);
+selectLetters(level9P, 1);
+selectLetters(level10P,1);
+selectLetters(level11P, 1);
+selectLetters(level12P, 1);
+selectLetters(level13P, 1);
+selectLetters(level14P, 100);
 
 
 // Select all elements with class "animate-z"
@@ -299,7 +299,7 @@ function level8Animation() {
     gsap.timeline({
       scrollTrigger: {
         trigger: letter,
-        start: "-=700 center",
+        start: "-=500 center",
         end: "+=600",
         toggleActions: "play none reverse none",
         id: "z-8",
@@ -329,23 +329,24 @@ function level9Animation() {
     gsap.timeline({
       scrollTrigger: {
         trigger: letter,
-        start: "-=700 30%",
+        start: "-=700 bottom",
         // end: "+=1000",
         // end: () => "+=" + document.letter.offsetWith,
-        endTrigger: ".level-9",
-        end: "+=400 80%",
+        endTrigger: ".level-9 p",
+        end: "bottom bottom",
         toggleActions: "play none reverse none",
         id: "z-9",
         ease: "none",
+        scrub: true,
       }
     })
     .to(
       letter,
       {
         position: "sticky",
-        top: getRandom(750, 680),
+        top: getRandom(100, 280),
         rotation: getRandom(90, -90),
-        x: getRandom(20, -20),
+        // x: getRandom(20, -20),
         // rotation: getRandom(90, -90),
           // y: 100,
       },
@@ -368,237 +369,113 @@ function level9Animation() {
   });
 }
 
-
 function level10Animation() {
-
   level10L.forEach((letter) => {
-    let timeline10 = gsap.timeline({
+
+    gsap.timeline({
       scrollTrigger: {
         trigger: letter,
-        start: "-800 top",
-        end: "+=1000",
-        toggleActions: "play none reverse reverse",
+        start: "-=800 center",
+        endTrigger: ".level-10 p",
+        end: "bottom bottom",
+        toggleActions: "play none reverse none",
         id: "z-10",
+        ease: "none",
+        scrub: true,
       }
-    });
-
-    var yNum = getRandom(3000, 2000);
-    var xNum = getRandom(20, -20);
-    var rNum = getRandom(0, -90);
-    var topNum = getRandom(750, 680);
-
-
-    timeline10.to(
+    })
+    .to(
       letter,
       {
-        css: {
-          rotation: rNum,
-        },
-        ease: "power2.in",
-        duration: 1,
+        position: "sticky",
+        top: getRandom(100, 280),
+        rotation: getRandom(90, -90),
+        // x: getRandom(20, -20),
       },
     );
 
-    timeline10.to(
-      letter,
-      {
-        css: {
-          y: yNum
-        },
-        ease: "power2.in",
-        duration: 2,
-      },
-      "<+=0.01"
-    );
-
-    // displayTail(level10P);
-
-    timeline10.to(
-      letter,
-      {
-        css: {
-          opacity: 0,
-        },
-        ease: "power2.in",
-        duration: 0.1,
-      },
-      ">"
-    );
   });
 }
 
-
 function level11Animation() {
-
   level11L.forEach((letter) => {
-    let timeline11 = gsap.timeline({
+
+    gsap.timeline({
       scrollTrigger: {
         trigger: letter,
-        start: "-700 top",
-        end: "+=1000",
-        toggleActions: "play none reverse reverse",
+        start: "-=800 center",
+        endTrigger: ".level-11 p",
+        end: "bottom bottom",
+        toggleActions: "play none reverse none",
         id: "z-11",
+        ease: "none",
+        scrub: true,
       }
-    });
-
-    var yNum = getRandom(3000, 2000);
-    var xNum = getRandom(20, -20);
-    var rNum = getRandom(0, -90);
-    var topNum = getRandom(750, 680);
-
-
-    timeline11.to(
+    })
+    .to(
       letter,
       {
-        css: {
-          rotation: rNum,
-        },
-        ease: "power2.in",
-        duration: 1,
+        position: "sticky",
+        top: getRandom(100, 280),
+        rotation: getRandom(90, -90),
+        // x: getRandom(20, -20),
       },
     );
 
-    timeline11.to(
-      letter,
-      {
-        css: {
-          y: yNum
-        },
-        ease: "power2.in",
-        duration: 2,
-      },
-      "<+=0.01"
-    );
-
-    // displayTail(level11P);
-
-    timeline11.to(
-      letter,
-      {
-        css: {
-          opacity: 0,
-        },
-        ease: "power2.in",
-        duration: 0.1,
-      },
-      ">"
-    );
   });
 }
 
 function level12Animation() {
-
   level12L.forEach((letter) => {
-    let timeline12 = gsap.timeline({
+
+    gsap.timeline({
       scrollTrigger: {
         trigger: letter,
-        start: "-700 top",
-        end: "+=1000",
-        toggleActions: "play none reverse reverse",
+        start: "-=800 30%",
+        endTrigger: ".level-12 p",
+        end: "bottom bottom",
+        toggleActions: "play none reverse none",
         id: "z-12",
+        ease: "none",
       }
-    });
-
-    var yNum = getRandom(5000, 4000);
-    var xNum = getRandom(20, -20);
-    var rNum = getRandom(0, -90);
-    var topNum = getRandom(750, 680);
-
-
-    timeline12.to(
+    })
+    .to(
       letter,
       {
-        css: {
-          rotation: rNum,
-        },
-        ease: "power2.in",
-        duration: 1,
+        position: "sticky",
+        top: getRandom(100, 280),
+        rotation: getRandom(90, -90),
+        // x: getRandom(20, -20),
       },
     );
 
-    timeline12.to(
-      letter,
-      {
-        css: {
-          y: yNum
-        },
-        ease: "power2.in",
-        duration: 2,
-      },
-      "<+=0.01"
-    );
-
-    // displayTail(level11P);
-
-    timeline12.to(
-      letter,
-      {
-        css: {
-          opacity: 0,
-        },
-        ease: "power2.in",
-        duration: 0.1,
-      },
-      ">"
-    );
   });
 }
 
 function level13Animation() {
-
   level13L.forEach((letter) => {
-    let timeline13 = gsap.timeline({
+
+    gsap.timeline({
       scrollTrigger: {
         trigger: letter,
-        start: "-700 top",
-        end: "+=1000",
-        toggleActions: "play none reverse reverse",
+        start: "-=800 30%",
+        endTrigger: ".level-13 p",
+        end: "bottom bottom",
+        toggleActions: "play none reverse none",
         id: "z-13",
+        ease: "none",
       }
-    });
-
-    var yNum = getRandom(7000, 6000);
-    var xNum = getRandom(20, -20);
-    var rNum = getRandom(0, -90);
-    var topNum = getRandom(750, 680);
-
-
-    timeline13.to(
+    })
+    .to(
       letter,
       {
-        css: {
-          rotation: rNum,
-        },
-        ease: "power2.in",
-        duration: 1,
+        position: "sticky",
+        top: getRandom(100, 280),
+        rotation: getRandom(90, -90),
+        // x: getRandom(20, -20),
       },
     );
 
-    timeline13.to(
-      letter,
-      {
-        css: {
-          y: yNum
-        },
-        ease: "power2.in",
-        duration: 2,
-      },
-      "<+=0.01"
-    );
-
-    // displayTail(level11P);
-
-    timeline13.to(
-      letter,
-      {
-        css: {
-          opacity: 0,
-        },
-        ease: "power2.in",
-        duration: 0.1,
-      },
-      ">"
-    );
   });
 }
 
@@ -606,32 +483,25 @@ function level13Animation() {
 function level14Animation() {
 
   level14L.forEach((letter) => {
-    let timeline14 = gsap.timeline({
+  gsap.timeline({
       scrollTrigger: {
         trigger: level14P,
-        start: "bottom bottom",
-        // end: "+=1000",
+        start: "top 30%",
+        end: "bottom bottom",
         toggleActions: "play none reverse reverse",
         id: "z-14",
+        scrub: true,
+        ease: "bounce.out",
       }
-    });
-
-    var yNum = getRandom(1000, 100);
-    var xNum = getRandom(20, -20);
-    var rNum = getRandom(0, -90);
-    var topNum = getRandom(500, 680);
-
-    timeline14.to(
+    })
+    .to(
       letter,
       {
-        css: {
           position: "sticky",
-          top: topNum,
-          rotation: rNum,
-          x: xNum,
-        },
-        ease: "none",
-        duration: 1,
+          top: getRandom(500, 680),
+          rotation: getRandom(0, -90),
+          x: getRandom(20, -20),
+        // duration: 1,
       },
       "<+=0.01"
     );

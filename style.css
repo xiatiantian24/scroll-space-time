@@ -81,28 +81,9 @@ p {
   margin-bottom: 150rem;
 }
 
-.level-9 {
-  margin-bottom: 30rem;
-}
-
-.level-10 {
-  margin-bottom: 80rem;
-}
-
-.level-11 {
-  margin-bottom: 120rem;
-}
-
-.level-12 {
-  margin-bottom: 180rem;
-}
-
-.level-13 {
-  margin-bottom: 400rem;
-}
-
-.level-14 {
+.level-9 p, .level-10 p, .level-11 p, .level-12 p, .level-13 p {
   margin-bottom: 0;
+  height: 120rem;
 }
 
 
@@ -138,7 +119,7 @@ p {
   z-index: -1;
 }
 
-.text-content::after {
+.divider::after {
   content: '';
   display: block;
   width: 100px;
