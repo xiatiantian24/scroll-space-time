@@ -21,13 +21,15 @@ var body = $("body"),
   level14P = document.querySelectorAll(".level-14 p"),
 
   slider = $("#slider"),
+  lr = document.getElementById("lr"),
+
   loadTimeline = gsap.timeline(),
   skewTimeline = gsap.timeline();
 turnTimeline = gsap.timeline();
 
 //scroll trigger markers control
 ScrollTrigger.defaults({
-  markers: true,
+  // markers: true,
 });
 
 // TODO: play some css animation before the javascript so that it can load without notice
@@ -57,11 +59,13 @@ function displayScrollSpeed() {
 function playSound(event) {
   // event.preventDefault();
   volume = Math.pow(Math.abs(event.deltaY) * 0.03, 1.5);
-    var elapsedTime = getElapsedTime();
-    if (elapsedTime % 2 === 0) {
-      return;
-    } else if (Math.abs(event.deltaY) > 0) {
+  var elapsedTime = getElapsedTime();
+  if (elapsedTime % 2 === 0) {
+    return;
+  } else 
+  if (Math.abs(event.deltaY) > 0) {
     console.log("play sound on volume " + volume);
+    // console.log("distance: " + event.deltaY)
     audio.volume = volume;
     audio.currentTime = 0;
     audio.play();
@@ -71,6 +75,49 @@ function playSound(event) {
 let volume = gsap.utils.clamp(0, 1);
 let audio = new Audio('scroll3.wav');
 document.body.addEventListener("wheel", playSound, { passive: true });
+
+function playAnimation(event) {
+  // var distance = event.deltaY;
+  var distance = Math.round(event.deltaY / 5) * 5
+  console.log("distance:" + distance)
+  if (distance > 5) {
+    lr.classList.remove("stay");
+    lr.classList.remove("up");
+    lr.classList.add("down");
+  }
+  else if (distance < -5) {
+    lr.classList.remove("stay");
+    lr.classList.remove("down");
+    lr.classList.add("up");
+  }
+  else {
+    lr.classList.remove("up");
+    lr.classList.remove("down");
+    lr.classList.add("stay");
+  }
+  if(Math.abs(distance > 50)){
+    gsap.to(body, {  ease: "none", backgroundColor: "#211217" })
+  } else {
+    gsap.to(body, { duration: 1, ease: "none", backgroundColor: "#865364" })
+  }
+}
+
+document.body.addEventListener("wheel", playAnimation, { passive: false });
+
+
+// function playAnimation(event) {
+//   console.log(event.deltaY)
+//   if (event.deltaY > 0){
+//     lr.classList.remove("stay");
+//     lr.classList.add("up");
+//   // document.getElementById('lr').style.animation="spin2 4s linear infinite";
+//   }
+//   else {
+//     lr.classList.remove("up");
+//     lr.classList.add("stay");
+//   }
+// }
+// document.body.addEventListener("wheel", playAnimation, { passive: false });
 
 
 //randomly select letters from a paragraph
@@ -117,7 +164,7 @@ selectLetters(level6P, 200);
 selectLetters(level7P, 250);
 selectLetters(level8P, 15);
 selectLetters(level9P, 1);
-selectLetters(level10P,1);
+selectLetters(level10P, 1);
 selectLetters(level11P, 1);
 selectLetters(level12P, 1);
 selectLetters(level13P, 1);
@@ -146,7 +193,6 @@ let proxy = { skew: 0, rotationY: 0 },
   flipSetter = gsap.quickTo(trans3DText, "rotationY", { duration: 5, ease: "power3.inOut" }, "deg"),
   zSetter = gsap.quickTo(trans3DText, "translateZ", { ease: "power3.out" }),
   turnSetter = gsap.quickTo(level8L, "rotationZ", { duration: 5, ease: "power3.out" }, "deg")
-  // bgSetter
   // yClamp = gsap.utils.clamp(-100, 100)
   ;
 
@@ -164,42 +210,42 @@ function getElapsedTime() {
 
 ScrollTrigger.create({
   onUpdate: (self) => {
-      scrollSpeed = self.getVelocity() / 600;
-      displayScrollSpeed();
+    scrollSpeed = self.getVelocity() / 600;
+    displayScrollSpeed();
 
-      perspective = 1000 / Math.sqrt(Math.abs(Math.abs(scrollSpeed) - 2));
-      if (
-        Math.abs(scrollSpeed) > Math.abs(proxy.skew)
-      ) {
-        proxy.skew = scrollSpeed * 2;
-        proxy.rotationY = -scrollSpeed * 2;
-        skewTimeline.to(proxy, {
-          skew: 0,
-          rotationY: 0,
-          duration: 3,
-          ease: "power3.out",
-          overwrite: true,
-          onUpdate: () => {
-            ySkewSetter(proxy.skew);
-            rotationSetter(proxy.rotationY);
-          },
-          onStart: () => {
-            gsap.set(".trans3DText", {
-              transformPerspective: perspective,
-              transformStyle: "preserve-3d"
-            });
-            // console.log(perspective);
-          }
-        });
-        // console.log("skew on speed: " + scrollSpeed);
-      };
-      if (
-        Math.abs(scrollSpeed) > 15
-      ) {
-        proxy.rotationY = -360;
-        perspective = 1000;
-        // console.log("rotate on speed: " + scrollSpeed);
-      };
+    perspective = 1000 / Math.sqrt(Math.abs(Math.abs(scrollSpeed) - 2));
+    if (
+      Math.abs(scrollSpeed) > Math.abs(proxy.skew)
+    ) {
+      proxy.skew = scrollSpeed * 2;
+      proxy.rotationY = -scrollSpeed * 2;
+      skewTimeline.to(proxy, {
+        skew: 0,
+        rotationY: 0,
+        duration: 3,
+        ease: "power3.out",
+        overwrite: true,
+        onUpdate: () => {
+          ySkewSetter(proxy.skew);
+          rotationSetter(proxy.rotationY);
+        },
+        onStart: () => {
+          gsap.set(".trans3DText", {
+            transformPerspective: perspective,
+            transformStyle: "preserve-3d"
+          });
+          // console.log(perspective);
+        }
+      });
+      // console.log("skew on speed: " + scrollSpeed);
+    };
+    if (
+      Math.abs(scrollSpeed) > 15
+    ) {
+      proxy.rotationY = -360;
+      perspective = 1000;
+      // console.log("rotate on speed: " + scrollSpeed);
+    };
   }
 });
 
@@ -337,17 +383,17 @@ function level9Animation() {
         scrub: true,
       }
     })
-    .to(
-      letter,
-      {
-        position: "sticky",
-        top: getRandom(100, 280),
-        rotation: getRandom(90, -90),
-        // x: getRandom(20, -20),
-        // rotation: getRandom(90, -90),
+      .to(
+        letter,
+        {
+          position: "sticky",
+          top: getRandom(100, 280),
+          rotation: getRandom(90, -90),
+          // x: getRandom(20, -20),
+          // rotation: getRandom(90, -90),
           // y: 100,
-      },
-    );
+        },
+      );
 
     // displayTail(level9P);
 
@@ -381,15 +427,15 @@ function level10Animation() {
         scrub: true,
       }
     })
-    .to(
-      letter,
-      {
-        position: "sticky",
-        top: getRandom(100, 280),
-        rotation: getRandom(90, -90),
-        // x: getRandom(20, -20),
-      },
-    );
+      .to(
+        letter,
+        {
+          position: "sticky",
+          top: getRandom(100, 280),
+          rotation: getRandom(90, -90),
+          // x: getRandom(20, -20),
+        },
+      );
 
   });
 }
@@ -409,15 +455,15 @@ function level11Animation() {
         scrub: true,
       }
     })
-    .to(
-      letter,
-      {
-        position: "sticky",
-        top: getRandom(100, 280),
-        rotation: getRandom(90, -90),
-        // x: getRandom(20, -20),
-      },
-    );
+      .to(
+        letter,
+        {
+          position: "sticky",
+          top: getRandom(100, 280),
+          rotation: getRandom(90, -90),
+          // x: getRandom(20, -20),
+        },
+      );
 
   });
 }
@@ -436,15 +482,15 @@ function level12Animation() {
         ease: "none",
       }
     })
-    .to(
-      letter,
-      {
-        position: "sticky",
-        top: getRandom(100, 280),
-        rotation: getRandom(90, -90),
-        // x: getRandom(20, -20),
-      },
-    );
+      .to(
+        letter,
+        {
+          position: "sticky",
+          top: getRandom(100, 280),
+          rotation: getRandom(90, -90),
+          // x: getRandom(20, -20),
+        },
+      );
 
   });
 }
@@ -463,15 +509,15 @@ function level13Animation() {
         ease: "none",
       }
     })
-    .to(
-      letter,
-      {
-        position: "sticky",
-        top: getRandom(100, 280),
-        rotation: getRandom(90, -90),
-        // x: getRandom(20, -20),
-      },
-    );
+      .to(
+        letter,
+        {
+          position: "sticky",
+          top: getRandom(100, 280),
+          rotation: getRandom(90, -90),
+          // x: getRandom(20, -20),
+        },
+      );
 
   });
 }
@@ -480,7 +526,7 @@ function level13Animation() {
 function level14Animation() {
 
   level14L.forEach((letter) => {
-  gsap.timeline({
+    gsap.timeline({
       scrollTrigger: {
         trigger: level14P,
         start: "top 30%",
@@ -491,17 +537,17 @@ function level14Animation() {
         ease: "bounce.out",
       }
     })
-    .to(
-      letter,
-      {
+      .to(
+        letter,
+        {
           position: "sticky",
           top: getRandom(500, 680),
           rotation: getRandom(0, -90),
           x: getRandom(20, -20),
-        // duration: 1,
-      },
-      "<+=0.01"
-    );
+          // duration: 1,
+        },
+        "<+=0.01"
+      );
 
     // displayTail(level11P);
   });
@@ -531,3 +577,16 @@ function displayTail(paragraph) {
 window.onbeforeunload = function () {
   window.scrollTo(0, 0);
 }
+
+// var isLoaded = true;
+// function loadAnimation(){
+// if (isLoaded){
+//   setTimeout(() => {
+//     console.log("load animation");
+//   }, 5000);
+//   lr.classList.remove("down");
+//   lr.classList.add("stay");  
+// }
+// }
+
+// loadAnimation();
